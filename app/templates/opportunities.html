@@ -3,30 +3,202 @@
 <head>
     <title>Approved Opportunities</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        .card {
+            background-color: #111;
+            border: 1px solid #333;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            border-color: #fff;
+        }
+        .btn {
+            border-radius: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .btn-outline-light {
+            color: #fff;
+            border: 1px solid #fff;
+            background: transparent;
+        }
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .btn-primary {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-primary:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .badge {
+            background-color: #fff;
+            color: #000;
+            border-radius: 0;
+            font-size: 10px;
+            padding: 4px 8px;
+        }
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        .opportunity-details {
+            background-color: #000;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 0;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #ccc;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detail-value {
+            color: #fff;
+            font-size: 12px;
+        }
+        .text-muted {
+            color: #ccc !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #fff !important;
+        }
+        .card-title {
+            color: #fff !important;
+        }
+    </style>
 </head>
-<body class="container py-5">
-    <h2>Approved Opportunities</h2>
-    {% if opportunities %}
-    <ul class="list-group">
-        {% for opp in opportunities %}
-        <li class="list-group-item">
-            <h5>{{ opp.title }} {% if opp.badge %}<span class="badge bg-info">{{ opp.badge }}</span>{% endif %}</h5>
-            <div><strong>Company:</strong> {{ opp.company }}</div>
-            <div><strong>Description:</strong> {{ opp.description }}</div>
-            <div><strong>Location:</strong> {{ opp.location }}</div>
-            <div><strong>Type:</strong> {{ opp.type }}</div>
-            <div><strong>Deadline:</strong> {{ opp.application_deadline }}</div>
-            {% if opp.compensation %}<div><strong>Compensation:</strong> {{ opp.compensation }}</div>{% endif %}
-            {% if opp.skills %}<div><strong>Skills:</strong> {{ opp.skills }}</div>{% endif %}
-            {% if opp.grade_levels %}<div><strong>Grade Levels:</strong> {{ opp.grade_levels }}</div>{% endif %}
-            {% if opp.gpa_requirement %}<div><strong>GPA Requirement:</strong> {{ opp.gpa_requirement }}</div>{% endif %}
-            {% if opp.file_attachment %}<div><a href="/uploads/{{ opp.file_attachment }}">Download Attachment</a></div>{% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-        <p>No approved opportunities yet.</p>
-    {% endif %}
-    <a href="/submit/general" class="btn btn-link mt-3">Submit an Opportunity</a>
+<body>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <a href="/" class="btn btn-outline-light btn-sm">Home</a>
+        <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra</a>
+        <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+        <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+    </div>
+
+    <div class="container py-5">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h2 class="fw-light">Approved Opportunities</h2>
+            <p class="text-muted">Discover quality opportunities that have been reviewed and approved</p>
+        </div>
+
+        {% if opportunities %}
+        <div class="row">
+            {% for opp in opportunities %}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ opp.title }} 
+                            {% if opp.badge %}<span class="badge">{{ opp.badge }}</span>{% endif %}
+                            {% if opp.priority %}<span class="badge bg-warning text-dark">Priority</span>{% endif %}
+                        </h5>
+                        
+                        <div class="opportunity-details">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="detail-label">Company:</span> <span class="detail-value">{{ opp.company }}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="detail-label">Location:</span> <span class="detail-value">{{ opp.location or 'N/A' }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span class="detail-label">Type:</span> <span class="detail-value">{{ opp.type or 'N/A' }}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="detail-label">Deadline:</span> <span class="detail-value">{{ opp.application_deadline or 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="detail-label">Description:</span>
+                            <p class="detail-value">{{ opp.description }}</p>
+                        </div>
+
+                        {% if opp.compensation or opp.skills or opp.grade_levels or opp.gpa_requirement %}
+                        <div class="opportunity-details">
+                            <span class="detail-label">Additional Details:</span>
+                            <div class="row">
+                                {% if opp.compensation %}<div class="col-md-3"><span class="detail-label">Compensation:</span> <span class="detail-value">{{ opp.compensation }}</span></div>{% endif %}
+                                {% if opp.skills %}<div class="col-md-3"><span class="detail-label">Skills:</span> <span class="detail-value">{{ opp.skills }}</span></div>{% endif %}
+                                {% if opp.grade_levels %}<div class="col-md-3"><span class="detail-label">Grade Levels:</span> <span class="detail-value">{{ opp.grade_levels }}</span></div>{% endif %}
+                                {% if opp.gpa_requirement %}<div class="col-md-3"><span class="detail-label">GPA Requirement:</span> <span class="detail-value">{{ opp.gpa_requirement }}</span></div>{% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if opp.application_link %}
+                        <div class="mt-3">
+                            <a href="{{ opp.application_link }}" target="_blank" class="btn btn-primary">Apply Now</a>
+                        </div>
+                        {% endif %}
+
+                        {% if opp.file_attachment %}
+                        <div class="mt-2">
+                            <a href="/uploads/{{ opp.file_attachment }}" class="btn btn-outline-light btn-sm">Download Attachment</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-muted">No Approved Opportunities Yet</h4>
+                    <p class="text-muted">Check back soon for new opportunities!</p>
+                    <a href="/submit/general" class="btn btn-primary">Submit an Opportunity</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation -->
+        <div class="text-center mt-5">
+            <a href="/" class="btn btn-outline-light">Back to Home</a>
+            <a href="/submit/ultra" class="btn btn-outline-light">Submit Ultra</a>
+            <a href="/submit/general" class="btn btn-outline-light">Submit General</a>
+        </div>
+    </div>
 </body>
 </html> 

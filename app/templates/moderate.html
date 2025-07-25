@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <title>Moderation Dashboard</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
         }
         .table {
             color: #fff;
@@ -27,14 +31,14 @@
             color: #fff !important;
             vertical-align: middle;
         }
-        .form-control {
+        .form-control, .form-select {
             background-color: #111;
             border: 1px solid #333;
             color: #fff;
             border-radius: 0;
             padding: 8px;
         }
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             background-color: #111;
             border-color: #fff;
             color: #fff;
@@ -81,6 +85,17 @@
             color: #000;
             transform: scale(1.05);
         }
+        .btn-primary {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-primary:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
         .badge {
             border-radius: 0;
             font-size: 10px;
@@ -106,6 +121,7 @@
             background: linear-gradient(135deg, #111 0%, #000 100%);
             padding: 40px 0;
             margin-bottom: 30px;
+            border: 1px solid #333;
         }
         .submission-card {
             background-color: #111;
@@ -120,9 +136,10 @@
         }
         .edit-form {
             background-color: #000;
-            border: 1px solid #333;
+            border: 2px solid #ffc107;
             padding: 15px;
             margin-top: 10px;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
         }
         .status-pending {
             color: #ffc107;
@@ -142,7 +159,7 @@
         }
         .info-label {
             font-weight: bold;
-            color: #ccc;
+            color: #fff;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -150,6 +167,57 @@
         .info-value {
             color: #fff;
             font-size: 12px;
+        }
+        .text-muted {
+            color: #ccc !important;
+        }
+        .form-label {
+            color: #fff !important;
+        }
+        .form-text {
+            color: #ccc !important;
+        }
+        .filters-section {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .stats-section {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: #000;
+            border: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .stat-label {
+            color: #ccc;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bulk-actions {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .checkbox-wrapper {
+            margin-right: 10px;
+        }
+        .checkbox-wrapper input[type="checkbox"] {
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -159,6 +227,7 @@
         <a href="/" class="btn btn-outline-light btn-sm">Home</a>
         <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra</a>
         <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+        <a href="/opportunities" class="btn btn-outline-light btn-sm">Opportunities</a>
         <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
     </div>
 
@@ -169,6 +238,88 @@
             <p class="text-muted">Review and manage opportunity submissions</p>
         </div>
 
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <h4 class="fw-light mb-3">Submission Statistics</h4>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ stats.pending }}</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ stats.approved }}</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ stats.rejected }}</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ stats.total }}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <h4 class="fw-light mb-3">Filters & Options</h4>
+            <form method="get" class="row">
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="approved" {% if request.args.get('status') == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="rejected" {% if request.args.get('status') == 'rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="source" class="form-select">
+                        <option value="">All Sources</option>
+                        <option value="ultra" {% if request.args.get('source') == 'ultra' %}selected{% endif %}>Ultra</option>
+                        <option value="general" {% if request.args.get('source') == 'general' %}selected{% endif %}>General</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by title or company" value="{{ request.args.get('search', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <h5 class="fw-light mb-3">Bulk Actions</h5>
+            <form method="post" id="bulk-form">
+                <div class="row">
+                    <div class="col-md-4">
+                        <select name="bulk_action" class="form-select">
+                            <option value="">Select Action</option>
+                            <option value="approve">Approve Selected</option>
+                            <option value="reject">Reject Selected</option>
+                            <option value="delete">Delete Selected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="bulk_feedback" class="form-control" placeholder="Feedback (optional)">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Are you sure you want to perform this action on selected items?')">Execute Bulk Action</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         {% if submissions %}
         <div class="row">
             {% for sub in submissions %}
@@ -176,14 +327,19 @@
                 <div class="submission-card">
                     <div class="row">
                         <div class="col-md-8">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" name="selected_items" value="{{ sub.id }}" form="bulk-form">
+                            </div>
                             <h5>{{ sub.title }} 
                                 {% if sub.badge %}<span class="badge bg-info text-dark">{{ sub.badge }}</span>{% endif %}
                                 {% if sub.priority %}<span class="badge bg-warning text-dark">Priority</span>{% endif %}
+                                <span class="badge {% if sub.status == 'pending' %}bg-warning{% elif sub.status == 'approved' %}bg-success{% else %}bg-danger{% endif %} text-dark">{{ sub.status|title }}</span>
                             </h5>
-                            <p class="text-muted mb-2">
+                            <p class="text-white mb-2">
                                 <strong>Company:</strong> {{ sub.company }} | 
                                 <strong>Source:</strong> {{ sub.source }} | 
-                                <strong>ID:</strong> {{ sub.id }}
+                                <strong>ID:</strong> {{ sub.id }} |
+                                <strong>Created:</strong> {{ sub.created_at.strftime('%Y-%m-%d %H:%M') if sub.created_at else 'N/A' }}
                             </p>
                             <div class="mb-3">
                                 <strong>Description:</strong>
@@ -236,13 +392,13 @@
 
                             <div class="row">
                                 <div class="col-md-3">
-                                    <small class="text-muted"><strong>Location:</strong> {{ sub.location or 'N/A' }}</small>
+                                    <small class="text-white"><strong>Location:</strong> {{ sub.location or 'N/A' }}</small>
                                 </div>
                                 <div class="col-md-3">
-                                    <small class="text-muted"><strong>Type:</strong> {{ sub.type or 'N/A' }}</small>
+                                    <small class="text-white"><strong>Type:</strong> {{ sub.type or 'N/A' }}</small>
                                 </div>
                                 <div class="col-md-3">
-                                    <small class="text-muted"><strong>Deadline:</strong> {{ sub.application_deadline or 'N/A' }}</small>
+                                    <small class="text-white"><strong>Deadline:</strong> {{ sub.application_deadline or 'N/A' }}</small>
                                 </div>
                                 <div class="col-md-3">
                                     {% if sub.file_attachment %}
@@ -252,17 +408,27 @@
                             </div>
                             {% if sub.gpa_requirement or sub.skills or sub.grade_levels or sub.compensation %}
                             <div class="mt-3">
-                                <strong>Additional Details:</strong>
+                                <strong class="text-white">Additional Details:</strong>
                                 <div class="row">
-                                    {% if sub.gpa_requirement %}<div class="col-md-3"><small class="text-muted">GPA: {{ sub.gpa_requirement }}</small></div>{% endif %}
-                                    {% if sub.skills %}<div class="col-md-3"><small class="text-muted">Skills: {{ sub.skills }}</small></div>{% endif %}
-                                    {% if sub.grade_levels %}<div class="col-md-3"><small class="text-muted">Grades: {{ sub.grade_levels }}</small></div>{% endif %}
-                                    {% if sub.compensation %}<div class="col-md-3"><small class="text-muted">Comp: {{ sub.compensation }}</small></div>{% endif %}
+                                    {% if sub.gpa_requirement %}<div class="col-md-3"><small class="text-white">GPA: {{ sub.gpa_requirement }}</small></div>{% endif %}
+                                    {% if sub.skills %}<div class="col-md-3"><small class="text-white">Skills: {{ sub.skills }}</small></div>{% endif %}
+                                    {% if sub.grade_levels %}<div class="col-md-3"><small class="text-white">Grades: {{ sub.grade_levels }}</small></div>{% endif %}
+                                    {% if sub.compensation %}<div class="col-md-3"><small class="text-white">Comp: {{ sub.compensation }}</small></div>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if sub.feedback %}
+                            <div class="mt-3">
+                                <strong>Feedback:</strong>
+                                <div class="info-section">
+                                    <span class="info-value">{{ sub.feedback }}</span>
                                 </div>
                             </div>
                             {% endif %}
                         </div>
                         <div class="col-md-4">
+                            {% if sub.status == 'pending' %}
                             <form method="post" class="mb-2">
                                 <input type="hidden" name="id" value="{{ sub.id }}">
                                 <input type="hidden" name="action" value="approve">
@@ -275,27 +441,162 @@
                                 <input type="text" name="feedback" placeholder="Rejection feedback (optional)" class="form-control mb-2">
                                 <button type="submit" class="btn btn-danger btn-sm w-100">Reject</button>
                             </form>
+                            {% endif %}
                             <button class="btn btn-outline-light btn-sm w-100" onclick="toggleEdit({{ sub.id }})">Edit</button>
+                            <form method="post" class="mt-2">
+                                <input type="hidden" name="id" value="{{ sub.id }}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn btn-outline-light btn-sm w-100" onclick="return confirm('Are you sure you want to delete this submission?')">Delete</button>
+                            </form>
                         </div>
                     </div>
                     
                     <!-- Edit Form (Hidden by default) -->
                     <div id="edit-{{ sub.id }}" class="edit-form" style="display: none;">
-                        <h6>Edit Submission</h6>
+                        <h6 class="text-white">Edit Submission</h6>
                         <form method="post">
                             <input type="hidden" name="id" value="{{ sub.id }}">
                             <input type="hidden" name="action" value="edit">
-                            <div class="row">
+                            
+                            <!-- Basic Information -->
+                            <div class="row mb-3">
                                 <div class="col-md-6">
+                                    <label class="form-label">Title</label>
                                     <input type="text" name="title" value="{{ sub.title }}" class="form-control mb-2" placeholder="Title">
-                                    <input type="text" name="company" value="{{ sub.company }}" class="form-control mb-2" placeholder="Company">
-                                    <textarea name="description" class="form-control mb-2" rows="3" placeholder="Description">{{ sub.description }}</textarea>
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label">Company</label>
+                                    <input type="text" name="company" value="{{ sub.company }}" class="form-control mb-2" placeholder="Company">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="description" class="form-control mb-2" rows="3" placeholder="Description">{{ sub.description }}</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Location and Type -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Location</label>
                                     <input type="text" name="location" value="{{ sub.location or '' }}" class="form-control mb-2" placeholder="Location">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Type</label>
                                     <input type="text" name="type" value="{{ sub.type or '' }}" class="form-control mb-2" placeholder="Type">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Application Deadline</label>
                                     <input type="text" name="application_deadline" value="{{ sub.application_deadline or '' }}" class="form-control mb-2" placeholder="Deadline">
+                                </div>
+                            </div>
+                            
+                            <!-- Requirements -->
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">GPA Requirement</label>
+                                    <input type="text" name="gpa_requirement" value="{{ sub.gpa_requirement or '' }}" class="form-control mb-2" placeholder="GPA">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Skills</label>
+                                    <input type="text" name="skills" value="{{ sub.skills or '' }}" class="form-control mb-2" placeholder="Skills">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Grade Levels</label>
+                                    <input type="text" name="grade_levels" value="{{ sub.grade_levels or '' }}" class="form-control mb-2" placeholder="Grade Levels">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Compensation</label>
+                                    <input type="text" name="compensation" value="{{ sub.compensation or '' }}" class="form-control mb-2" placeholder="Compensation">
+                                </div>
+                            </div>
+                            
+                            <!-- Submitter Information -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h6 class="text-white">Submitter Information</h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Role</label>
+                                    <input type="text" name="submitter_role" value="{{ sub.submitter_role or '' }}" class="form-control mb-2" placeholder="Role">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="submitter_name" value="{{ sub.submitter_name or '' }}" class="form-control mb-2" placeholder="Name">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="submitter_email" value="{{ sub.submitter_email or '' }}" class="form-control mb-2" placeholder="Email">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="submitter_phone" value="{{ sub.submitter_phone or '' }}" class="form-control mb-2" placeholder="Phone">
+                                </div>
+                            </div>
+                            
+                            <!-- Company Information -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h6 class="text-white">Company Information</h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Website</label>
+                                    <input type="url" name="company_website" value="{{ sub.company_website or '' }}" class="form-control mb-2" placeholder="Website">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Size</label>
+                                    <input type="text" name="company_size" value="{{ sub.company_size or '' }}" class="form-control mb-2" placeholder="Size">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Industry</label>
+                                    <input type="text" name="industry" value="{{ sub.industry or '' }}" class="form-control mb-2" placeholder="Industry">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Company Location</label>
+                                    <input type="text" name="company_location" value="{{ sub.company_location or '' }}" class="form-control mb-2" placeholder="Company Location">
+                                </div>
+                            </div>
+                            
+                            <!-- Application Information -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h6 class="text-white">Application Information</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Application Link</label>
+                                    <input type="url" name="application_link" value="{{ sub.application_link or '' }}" class="form-control mb-2" placeholder="Application Link">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Application Method</label>
+                                    <input type="text" name="application_method" value="{{ sub.application_method or '' }}" class="form-control mb-2" placeholder="Application Method">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Instructions</label>
+                                    <textarea name="application_instructions" class="form-control mb-2" rows="2" placeholder="Application Instructions">{{ sub.application_instructions or '' }}</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Priority and Badge -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Priority</label>
+                                    <select name="priority" class="form-select mb-2">
+                                        <option value="False" {% if not sub.priority %}selected{% endif %}>No</option>
+                                        <option value="True" {% if sub.priority %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Badge</label>
+                                    <input type="text" name="badge" value="{{ sub.badge or '' }}" class="form-control mb-2" placeholder="Badge">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
                                     <button type="submit" class="btn btn-outline-light btn-sm">Save Changes</button>
+                                    <button type="button" class="btn btn-outline-light btn-sm" onclick="toggleEdit({{ sub.id }})">Cancel</button>
                                 </div>
                             </div>
                         </form>
@@ -307,9 +608,9 @@
         {% else %}
         <div class="text-center">
             <div class="submission-card">
-                <h4 class="text-muted">No Pending Submissions</h4>
-                <p class="text-muted">All submissions have been reviewed and processed.</p>
-                <a href="/" class="btn btn-outline-light">Back to Home</a>
+                <h4 class="text-muted">No Submissions Found</h4>
+                <p class="text-muted">No submissions match the current filters.</p>
+                <a href="/moderate" class="btn btn-outline-light">Clear Filters</a>
             </div>
         </div>
         {% endif %}
@@ -317,6 +618,7 @@
         <!-- Navigation -->
         <div class="text-center mt-5">
             <a href="/" class="btn btn-outline-light">Back to Home</a>
+            <a href="/opportunities" class="btn btn-outline-light">View Opportunities</a>
             <a href="/logout" class="btn btn-outline-light">Logout</a>
         </div>
     </div>
@@ -329,6 +631,18 @@
             } else {
                 editForm.style.display = 'none';
             }
+        }
+
+        // Select all checkboxes
+        function selectAll() {
+            const checkboxes = document.querySelectorAll('input[name="selected_items"]');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        }
+
+        // Deselect all checkboxes
+        function deselectAll() {
+            const checkboxes = document.querySelectorAll('input[name="selected_items"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
         }
     </script>
 </body>

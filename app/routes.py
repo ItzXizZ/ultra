@@ -142,40 +142,139 @@ def submit_general():
 @login_required
 def moderate():
     if request.method == 'POST':
-        sub_id = request.form['id']
-        action = request.form['action']
-        submission = OpportunitySubmission.query.get(sub_id)
+        # Handle bulk actions
+        if 'bulk_action' in request.form and request.form['bulk_action']:
+            bulk_action = request.form['bulk_action']
+            selected_items = request.form.getlist('selected_items')
+            bulk_feedback = request.form.get('bulk_feedback', '')
+            
+            if selected_items:
+                submissions = OpportunitySubmission.query.filter(OpportunitySubmission.id.in_(selected_items)).all()
+                
+                for submission in submissions:
+                    if bulk_action == 'approve':
+                        submission.status = 'approved'
+                        if bulk_feedback:
+                            submission.feedback = bulk_feedback
+                    elif bulk_action == 'reject':
+                        submission.status = 'rejected'
+                        if bulk_feedback:
+                            submission.feedback = bulk_feedback
+                    elif bulk_action == 'delete':
+                        db.session.delete(submission)
+                
+                db.session.commit()
+                flash(f'Bulk action "{bulk_action}" completed on {len(selected_items)} items!')
+                return redirect(url_for('main.moderate'))
+        
+        # Handle individual actions
+        sub_id = request.form.get('id')
+        action = request.form.get('action')
+        
+        if sub_id and action:
+            submission = OpportunitySubmission.query.get(sub_id)
 
-        if submission:
-            if action == 'approve':
-                submission.status = 'approved'
-                feedback = request.form.get('feedback', '')
-                if feedback:
-                    submission.feedback = feedback
-                flash(f'Submission "{submission.title}" approved!')
+            if submission:
+                if action == 'approve':
+                    submission.status = 'approved'
+                    feedback = request.form.get('feedback', '')
+                    if feedback:
+                        submission.feedback = feedback
+                    flash(f'Submission "{submission.title}" approved!')
 
-            elif action == 'reject':
-                submission.status = 'rejected'
-                feedback = request.form.get('feedback', '')
-                if feedback:
-                    submission.feedback = feedback
-                flash(f'Submission "{submission.title}" rejected!')
+                elif action == 'reject':
+                    submission.status = 'rejected'
+                    feedback = request.form.get('feedback', '')
+                    if feedback:
+                        submission.feedback = feedback
+                    flash(f'Submission "{submission.title}" rejected!')
 
-            elif action == 'edit':
-                submission.title = request.form.get('title', submission.title)
-                submission.description = request.form.get('description', submission.description)
-                submission.company = request.form.get('company', submission.company)
-                submission.location = request.form.get('location', submission.location)
-                submission.type = request.form.get('type', submission.type)
-                submission.application_deadline = request.form.get('application_deadline', submission.application_deadline)
-                flash(f'Submission "{submission.title}" updated!')
+                elif action == 'edit':
+                    submission.title = request.form.get('title', submission.title)
+                    submission.description = request.form.get('description', submission.description)
+                    submission.company = request.form.get('company', submission.company)
+                    submission.location = request.form.get('location', submission.location)
+                    submission.type = request.form.get('type', submission.type)
+                    submission.application_deadline = request.form.get('application_deadline', submission.application_deadline)
+                    
+                    # Additional fields
+                    submission.gpa_requirement = request.form.get('gpa_requirement', submission.gpa_requirement)
+                    submission.skills = request.form.get('skills', submission.skills)
+                    submission.grade_levels = request.form.get('grade_levels', submission.grade_levels)
+                    submission.compensation = request.form.get('compensation', submission.compensation)
+                    
+                    # Submitter information
+                    submission.submitter_role = request.form.get('submitter_role', submission.submitter_role)
+                    submission.submitter_name = request.form.get('submitter_name', submission.submitter_name)
+                    submission.submitter_email = request.form.get('submitter_email', submission.submitter_email)
+                    submission.submitter_phone = request.form.get('submitter_phone', submission.submitter_phone)
+                    
+                    # Company information
+                    submission.company_website = request.form.get('company_website', submission.company_website)
+                    submission.company_size = request.form.get('company_size', submission.company_size)
+                    submission.industry = request.form.get('industry', submission.industry)
+                    submission.company_location = request.form.get('company_location', submission.company_location)
+                    
+                    # Application information
+                    submission.application_link = request.form.get('application_link', submission.application_link)
+                    submission.application_method = request.form.get('application_method', submission.application_method)
+                    submission.application_instructions = request.form.get('application_instructions', submission.application_instructions)
+                    
+                    # Priority and badge
+                    priority_value = request.form.get('priority', 'False')
+                    submission.priority = priority_value == 'True'
+                    submission.badge = request.form.get('badge', submission.badge)
+                    
+                    flash(f'Submission "{submission.title}" updated!')
 
-            db.session.commit()
+                elif action == 'delete':
+                    title = submission.title
+                    db.session.delete(submission)
+                    flash(f'Submission "{title}" deleted!')
 
-    pending = OpportunitySubmission.query.filter_by(status='pending').all()
-    return render_template('moderate.html', submissions=pending)
+                db.session.commit()
+
+    # Build query with filters
+    query = OpportunitySubmission.query
+    
+    # Status filter
+    status_filter = request.args.get('status')
+    if status_filter:
+        query = query.filter_by(status=status_filter)
+    
+    # Source filter
+    source_filter = request.args.get('source')
+    if source_filter:
+        query = query.filter_by(source=source_filter)
+    
+    # Search filter
+    search_filter = request.args.get('search')
+    if search_filter:
+        query = query.filter(
+            (OpportunitySubmission.title.contains(search_filter)) |
+            (OpportunitySubmission.company.contains(search_filter))
+        )
+    
+    # Get submissions
+    submissions = query.order_by(OpportunitySubmission.created_at.desc()).all()
+    
+    # Calculate statistics
+    stats = {
+        'pending': OpportunitySubmission.query.filter_by(status='pending').count(),
+        'approved': OpportunitySubmission.query.filter_by(status='approved').count(),
+        'rejected': OpportunitySubmission.query.filter_by(status='rejected').count(),
+        'total': OpportunitySubmission.query.count()
+    }
+    
+    return render_template('moderate.html', submissions=submissions, stats=stats)
 
 # --- Serve Uploaded Files ---
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename) 
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
+# --- Opportunities Page ---
+@bp.route('/opportunities')
+def opportunities():
+    approved_opportunities = OpportunitySubmission.query.filter_by(status='approved').order_by(OpportunitySubmission.created_at.desc()).all()
+    return render_template('opportunities.html', opportunities=approved_opportunities) 
