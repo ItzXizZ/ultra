@@ -15,8 +15,32 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    login_manager.login_view = 'main.login'
+
+    # Import models to ensure they're registered with SQLAlchemy
+    from . import models
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return models.User.query.get(int(user_id))
 
     from . import routes
     app.register_blueprint(routes.bp)
+
+    # Initialize database tables
+    with app.app_context():
+        db.create_all()
+        
+        # Create admin user if it doesn't exist
+        from werkzeug.security import generate_password_hash
+        
+        admin_user = models.User.query.filter_by(username='admin').first()
+        if not admin_user:
+            admin_user = models.User(
+                username='admin',
+                password_hash=generate_password_hash('password')
+            )
+            db.session.add(admin_user)
+            db.session.commit()
 
     return app 
