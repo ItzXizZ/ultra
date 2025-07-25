@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Approved Opportunities</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+    <h2>Approved Opportunities</h2>
+    {% if opportunities %}
+    <ul class="list-group">
+        {% for opp in opportunities %}
+        <li class="list-group-item">
+            <h5>{{ opp.title }} {% if opp.badge %}<span class="badge bg-info">{{ opp.badge }}</span>{% endif %}</h5>
+            <div><strong>Company:</strong> {{ opp.company }}</div>
+            <div><strong>Description:</strong> {{ opp.description }}</div>
+            <div><strong>Location:</strong> {{ opp.location }}</div>
+            <div><strong>Type:</strong> {{ opp.type }}</div>
+            <div><strong>Deadline:</strong> {{ opp.application_deadline }}</div>
+            {% if opp.compensation %}<div><strong>Compensation:</strong> {{ opp.compensation }}</div>{% endif %}
+            {% if opp.skills %}<div><strong>Skills:</strong> {{ opp.skills }}</div>{% endif %}
+            {% if opp.grade_levels %}<div><strong>Grade Levels:</strong> {{ opp.grade_levels }}</div>{% endif %}
+            {% if opp.gpa_requirement %}<div><strong>GPA Requirement:</strong> {{ opp.gpa_requirement }}</div>{% endif %}
+            {% if opp.file_attachment %}<div><a href="/uploads/{{ opp.file_attachment }}">Download Attachment</a></div>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No approved opportunities yet.</p>
+    {% endif %}
+    <a href="/submit/general" class="btn btn-link mt-3">Submit an Opportunity</a>
+</body>
+</html> 

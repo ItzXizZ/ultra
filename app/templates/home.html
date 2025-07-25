@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Ultra Opportunity Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            background-color: #111;
+            border: 1px solid #333;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            border-color: #fff;
+        }
+        .btn {
+            border-radius: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-primary:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .btn-success {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-success:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .btn-outline-secondary {
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+            transform: scale(1.05);
+        }
+        .btn-outline-light {
+            color: #fff;
+            border: 1px solid #fff;
+            background: transparent;
+        }
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .border {
+            border-color: #333 !important;
+        }
+        .text-muted {
+            color: #ccc !important;
+        }
+        .card-text {
+            color: #ccc !important;
+        }
+        .lead {
+            color: #ccc !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #fff !important;
+        }
+        .card-title {
+            color: #fff !important;
+        }
+        .badge {
+            background-color: #fff;
+            color: #000;
+            border-radius: 0;
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        .benefits-section {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <a href="/" class="btn btn-outline-light btn-sm">Home</a>
+        <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra</a>
+        <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+        <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+    </div>
+
+    <div class="container py-5">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h1 class="display-3 fw-light mb-4">UltraU</h1>
+            <p class="lead text-muted mb-5">Ultra Opportunity Portal</p>
+        </div>
+
+        <!-- Submission Options -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-5 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">Ultra</div>
+                        <h5 class="card-title fw-light">Ultra Exclusive</h5>
+                        <p class="card-text text-muted">Premium submissions with enhanced features, priority placement, and special badges.</p>
+                        <a href="/submit/ultra" class="btn btn-primary">Submit Ultra Exclusive</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-5 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">General</div>
+                        <h5 class="card-title fw-light">General Submission</h5>
+                        <p class="card-text text-muted">Public submissions for community participation. Simple and accessible to everyone.</p>
+                        <a href="/submit/general" class="btn btn-success">Submit General</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ultra Exclusive Benefits -->
+        <div class="benefits-section">
+            <h3 class="fw-light text-center mb-4">Ultra Exclusive Benefits</h3>
+            <div class="row">
+                <div class="col-md-3 text-center mb-3">
+                    <div class="feature-icon">Priority</div>
+                    <h6 class="fw-light">Priority Placement</h6>
+                    <p class="text-muted small">Your opportunities appear first in search results</p>
+                </div>
+                <div class="col-md-3 text-center mb-3">
+                    <div class="feature-icon">Badges</div>
+                    <h6 class="fw-light">Special Badges</h6>
+                    <p class="text-muted small">Premium verification badges for credibility</p>
+                </div>
+                <div class="col-md-3 text-center mb-3">
+                    <div class="feature-icon">Admit Rate</div>
+                    <h6 class="fw-light">Higher Admit Rate</h6>
+                    <p class="text-muted small">Increased chances of approval and visibility</p>
+                </div>
+                <div class="col-md-3 text-center mb-3">
+                    <div class="feature-icon">Features</div>
+                    <h6 class="fw-light">Enhanced Features</h6>
+                    <p class="text-muted small">Detailed forms with file attachments</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coordinator Access -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">Coordinator</div>
+                        <h5 class="card-title fw-light">Coordinator Access</h5>
+                        <p class="card-text text-muted">Login to access moderation dashboard and review submissions.</p>
+                        <a href="/login" class="btn btn-outline-secondary">Coordinator Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="mt-5">
+            <h3 class="fw-light text-center mb-5">How It Works</h3>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-4">
+                        <div class="feature-icon">Submit</div>
+                        <h5 class="fw-light">1. Submit</h5>
+                        <p class="text-muted">Choose your submission pathway</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-4">
+                        <div class="feature-icon">Review</div>
+                        <h5 class="fw-light">2. Review</h5>
+                        <p class="text-muted">Coordinators review submissions</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-4">
+                        <div class="feature-icon">Approve</div>
+                        <h5 class="fw-light">3. Approve</h5>
+                        <p class="text-muted">Quality opportunities approved</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-4">
+                        <div class="feature-icon">Discover</div>
+                        <h5 class="fw-light">4. Discover</h5>
+                        <p class="text-muted">Public access to opportunities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="text-center mt-5 pt-5 border-top">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="/" class="btn btn-outline-light btn-sm">Home</a>
+                </div>
+                <div class="col-md-3">
+                    <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra Exclusive</a>
+                </div>
+                <div class="col-md-3">
+                    <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+                </div>
+                <div class="col-md-3">
+                    <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

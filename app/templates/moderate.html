@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Moderation Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .table {
+            color: #fff;
+            background-color: #111;
+        }
+        .table th {
+            border-color: #333;
+            background-color: #000;
+            color: #fff !important;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+        }
+        .table td {
+            border-color: #333;
+            color: #fff !important;
+            vertical-align: middle;
+        }
+        .form-control {
+            background-color: #111;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 0;
+            padding: 8px;
+        }
+        .form-control:focus {
+            background-color: #111;
+            border-color: #fff;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+        }
+        .btn {
+            border-radius: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .btn-success {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-success:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .btn-danger {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-danger:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .btn-outline-light {
+            color: #fff;
+            border: 1px solid #fff;
+            background: transparent;
+        }
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .badge {
+            border-radius: 0;
+            font-size: 10px;
+            padding: 4px 8px;
+        }
+        pre {
+            color: #fff;
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 0;
+            font-size: 12px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        .submission-card {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .submission-card:hover {
+            border-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .edit-form {
+            background-color: #000;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .status-pending {
+            color: #ffc107;
+        }
+        .status-approved {
+            color: #198754;
+        }
+        .status-rejected {
+            color: #dc3545;
+        }
+        .info-section {
+            background-color: #000;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 0;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #ccc;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-value {
+            color: #fff;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <a href="/" class="btn btn-outline-light btn-sm">Home</a>
+        <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra</a>
+        <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+        <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+
+    <div class="container py-5">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h2 class="fw-light">Moderation Dashboard</h2>
+            <p class="text-muted">Review and manage opportunity submissions</p>
+        </div>
+
+        {% if submissions %}
+        <div class="row">
+            {% for sub in submissions %}
+            <div class="col-12 mb-4">
+                <div class="submission-card">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>{{ sub.title }} 
+                                {% if sub.badge %}<span class="badge bg-info text-dark">{{ sub.badge }}</span>{% endif %}
+                                {% if sub.priority %}<span class="badge bg-warning text-dark">Priority</span>{% endif %}
+                            </h5>
+                            <p class="text-muted mb-2">
+                                <strong>Company:</strong> {{ sub.company }} | 
+                                <strong>Source:</strong> {{ sub.source }} | 
+                                <strong>ID:</strong> {{ sub.id }}
+                            </p>
+                            <div class="mb-3">
+                                <strong>Description:</strong>
+                                <pre>{{ sub.description }}</pre>
+                            </div>
+
+                            <!-- Submitter Information -->
+                            {% if sub.submitter_role or sub.submitter_name or sub.submitter_email %}
+                            <div class="info-section">
+                                <div class="info-label">Submitter Information</div>
+                                <div class="row">
+                                    {% if sub.submitter_role %}<div class="col-md-3"><span class="info-label">Role:</span> <span class="info-value">{{ sub.submitter_role }}</span></div>{% endif %}
+                                    {% if sub.submitter_name %}<div class="col-md-3"><span class="info-label">Name:</span> <span class="info-value">{{ sub.submitter_name }}</span></div>{% endif %}
+                                    {% if sub.submitter_email %}<div class="col-md-3"><span class="info-label">Email:</span> <span class="info-value">{{ sub.submitter_email }}</span></div>{% endif %}
+                                    {% if sub.submitter_phone %}<div class="col-md-3"><span class="info-label">Phone:</span> <span class="info-value">{{ sub.submitter_phone }}</span></div>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Company Information -->
+                            {% if sub.company_website or sub.company_size or sub.industry or sub.company_location %}
+                            <div class="info-section">
+                                <div class="info-label">Company Information</div>
+                                <div class="row">
+                                    {% if sub.company_website %}<div class="col-md-3"><span class="info-label">Website:</span> <span class="info-value"><a href="{{ sub.company_website }}" target="_blank" style="color: #fff;">{{ sub.company_website }}</a></span></div>{% endif %}
+                                    {% if sub.company_size %}<div class="col-md-3"><span class="info-label">Size:</span> <span class="info-value">{{ sub.company_size }}</span></div>{% endif %}
+                                    {% if sub.industry %}<div class="col-md-3"><span class="info-label">Industry:</span> <span class="info-value">{{ sub.industry }}</span></div>{% endif %}
+                                    {% if sub.company_location %}<div class="col-md-3"><span class="info-label">Location:</span> <span class="info-value">{{ sub.company_location }}</span></div>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Application Information -->
+                            {% if sub.application_link or sub.application_method or sub.application_instructions %}
+                            <div class="info-section">
+                                <div class="info-label">Application Information</div>
+                                <div class="row">
+                                    {% if sub.application_link %}<div class="col-md-4"><span class="info-label">Link:</span> <span class="info-value"><a href="{{ sub.application_link }}" target="_blank" style="color: #fff;">{{ sub.application_link }}</a></span></div>{% endif %}
+                                    {% if sub.application_method %}<div class="col-md-4"><span class="info-label">Method:</span> <span class="info-value">{{ sub.application_method }}</span></div>{% endif %}
+                                    {% if sub.application_instructions %}<div class="col-md-4"><span class="info-label">Instructions:</span> <span class="info-value">{{ sub.application_instructions[:50] }}{% if sub.application_instructions|length > 50 %}...{% endif %}</span></div>{% endif %}
+                                </div>
+                                {% if sub.application_instructions and sub.application_instructions|length > 50 %}
+                                <div class="mt-2">
+                                    <span class="info-label">Full Instructions:</span>
+                                    <pre style="max-height: 60px;">{{ sub.application_instructions }}</pre>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <small class="text-muted"><strong>Location:</strong> {{ sub.location or 'N/A' }}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted"><strong>Type:</strong> {{ sub.type or 'N/A' }}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted"><strong>Deadline:</strong> {{ sub.application_deadline or 'N/A' }}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    {% if sub.file_attachment %}
+                                    <a href="/uploads/{{ sub.file_attachment }}" class="btn btn-outline-light btn-sm">Download</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if sub.gpa_requirement or sub.skills or sub.grade_levels or sub.compensation %}
+                            <div class="mt-3">
+                                <strong>Additional Details:</strong>
+                                <div class="row">
+                                    {% if sub.gpa_requirement %}<div class="col-md-3"><small class="text-muted">GPA: {{ sub.gpa_requirement }}</small></div>{% endif %}
+                                    {% if sub.skills %}<div class="col-md-3"><small class="text-muted">Skills: {{ sub.skills }}</small></div>{% endif %}
+                                    {% if sub.grade_levels %}<div class="col-md-3"><small class="text-muted">Grades: {{ sub.grade_levels }}</small></div>{% endif %}
+                                    {% if sub.compensation %}<div class="col-md-3"><small class="text-muted">Comp: {{ sub.compensation }}</small></div>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <form method="post" class="mb-2">
+                                <input type="hidden" name="id" value="{{ sub.id }}">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="text" name="feedback" placeholder="Approval feedback (optional)" class="form-control mb-2">
+                                <button type="submit" class="btn btn-success btn-sm w-100">Approve</button>
+                            </form>
+                            <form method="post" class="mb-2">
+                                <input type="hidden" name="id" value="{{ sub.id }}">
+                                <input type="hidden" name="action" value="reject">
+                                <input type="text" name="feedback" placeholder="Rejection feedback (optional)" class="form-control mb-2">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Reject</button>
+                            </form>
+                            <button class="btn btn-outline-light btn-sm w-100" onclick="toggleEdit({{ sub.id }})">Edit</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Edit Form (Hidden by default) -->
+                    <div id="edit-{{ sub.id }}" class="edit-form" style="display: none;">
+                        <h6>Edit Submission</h6>
+                        <form method="post">
+                            <input type="hidden" name="id" value="{{ sub.id }}">
+                            <input type="hidden" name="action" value="edit">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="title" value="{{ sub.title }}" class="form-control mb-2" placeholder="Title">
+                                    <input type="text" name="company" value="{{ sub.company }}" class="form-control mb-2" placeholder="Company">
+                                    <textarea name="description" class="form-control mb-2" rows="3" placeholder="Description">{{ sub.description }}</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="location" value="{{ sub.location or '' }}" class="form-control mb-2" placeholder="Location">
+                                    <input type="text" name="type" value="{{ sub.type or '' }}" class="form-control mb-2" placeholder="Type">
+                                    <input type="text" name="application_deadline" value="{{ sub.application_deadline or '' }}" class="form-control mb-2" placeholder="Deadline">
+                                    <button type="submit" class="btn btn-outline-light btn-sm">Save Changes</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center">
+            <div class="submission-card">
+                <h4 class="text-muted">No Pending Submissions</h4>
+                <p class="text-muted">All submissions have been reviewed and processed.</p>
+                <a href="/" class="btn btn-outline-light">Back to Home</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation -->
+        <div class="text-center mt-5">
+            <a href="/" class="btn btn-outline-light">Back to Home</a>
+            <a href="/logout" class="btn btn-outline-light">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleEdit(id) {
+            const editForm = document.getElementById('edit-' + id);
+            if (editForm.style.display === 'none') {
+                editForm.style.display = 'block';
+            } else {
+                editForm.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

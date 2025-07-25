@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Ultra Exclusive Submission</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-control, .form-select {
+            background-color: #111;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 0;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #111;
+            border-color: #fff;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+            transform: scale(1.02);
+        }
+        .btn {
+            border-radius: 0;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .btn-success {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-success:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            border: 1px solid #f8f9fa;
+            transform: scale(1.05);
+        }
+        .btn-outline-light {
+            color: #fff;
+            border: 1px solid #fff;
+            background: transparent;
+        }
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .alert-success {
+            background-color: #111;
+            border: 1px solid #198754;
+            color: #198754;
+            border-radius: 0;
+        }
+        .form-label {
+            color: #fff !important;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #fff !important;
+        }
+        .text-muted {
+            color: #ccc !important;
+        }
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .form-section:hover {
+            border-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <a href="/" class="btn btn-outline-light btn-sm">Home</a>
+        <a href="/submit/ultra" class="btn btn-outline-light btn-sm">Ultra</a>
+        <a href="/submit/general" class="btn btn-outline-light btn-sm">General</a>
+        <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+    </div>
+
+    <div class="container py-5">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h2 class="fw-light">Ultra Exclusive Opportunity Submission</h2>
+            <p class="text-muted">Premium submissions with enhanced features and priority placement</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <form method="post" enctype="multipart/form-data">
+                    <!-- Submitter Information -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Submitter Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label required-field">Your Role</label>
+                                <select class="form-select" name="submitter_role" required>
+                                    <option value="">Select your role</option>
+                                    <option value="company_representative">Company Representative</option>
+                                    <option value="recruiter">Recruiter</option>
+                                    <option value="hiring_manager">Hiring Manager</option>
+                                    <option value="student">Student</option>
+                                    <option value="faculty">Faculty/Staff</option>
+                                    <option value="alumni">Alumni</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-control" name="submitter_name" placeholder="Your full name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Your Email</label>
+                                <input type="email" class="form-control" name="submitter_email" placeholder="your.email@example.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Your Phone</label>
+                                <input type="tel" class="form-control" name="submitter_phone" placeholder="(555) 123-4567">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Basic Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label required-field">Title</label>
+                                <input type="text" class="form-control" name="title" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company</label>
+                                <input type="text" class="form-control" name="company" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required-field">Description</label>
+                            <textarea class="form-control" name="description" rows="4" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Company Information -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Company Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company Website</label>
+                                <input type="url" class="form-control" name="company_website" placeholder="https://www.company.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company Size</label>
+                                <select class="form-select" name="company_size">
+                                    <option value="">Select company size</option>
+                                    <option value="startup">Startup (1-50 employees)</option>
+                                    <option value="small">Small (51-200 employees)</option>
+                                    <option value="medium">Medium (201-1000 employees)</option>
+                                    <option value="large">Large (1000+ employees)</option>
+                                    <option value="fortune500">Fortune 500</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Industry</label>
+                                <input type="text" class="form-control" name="industry" placeholder="Technology, Healthcare, Finance, etc.">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company Location</label>
+                                <input type="text" class="form-control" name="company_location" placeholder="City, State, Country">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location & Type -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Location & Type</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Opportunity Location</label>
+                                <input type="text" class="form-control" name="location">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Type</label>
+                                <input type="text" class="form-control" name="type">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Application Deadline</label>
+                            <input type="text" class="form-control" name="application_deadline">
+                        </div>
+                    </div>
+
+                    <!-- Application Information -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Application Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Application Link</label>
+                                <input type="url" class="form-control" name="application_link" placeholder="https://company.com/apply">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Application Method</label>
+                                <select class="form-select" name="application_method">
+                                    <option value="">Select application method</option>
+                                    <option value="online_form">Online Application Form</option>
+                                    <option value="email">Email Application</option>
+                                    <option value="linkedin">LinkedIn Easy Apply</option>
+                                    <option value="company_portal">Company Career Portal</option>
+                                    <option value="handshake">Handshake</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Application Instructions</label>
+                            <textarea class="form-control" name="application_instructions" rows="3" placeholder="Any specific instructions for applicants..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="form-section">
+                        <h5 class="mb-4">Requirements & Criteria</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">GPA Requirement</label>
+                                <input type="text" class="form-control" name="gpa_requirement">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Grade Levels</label>
+                                <input type="text" class="form-control" name="grade_levels">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Compensation</label>
+                                <input type="text" class="form-control" name="compensation">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Skills</label>
+                            <input type="text" class="form-control" name="skills" placeholder="e.g., Python, JavaScript, Leadership">
+                        </div>
+                    </div>
+
+                    <!-- File Attachment -->
+                    <div class="form-section">
+                        <h5 class="mb-4">File Attachment</h5>
+                        <div class="mb-3">
+                            <label class="form-label">File Attachment</label>
+                            <input type="file" class="form-control" name="file_attachment">
+                            <small class="text-muted">Upload additional documents (PDF, DOC, etc.)</small>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">Submit Ultra Exclusive Opportunity</button>
+                    </div>
+                </form>
+
+                <!-- Success Message -->
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="alert alert-success mt-4">{{ messages[0] }}</div>
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Navigation -->
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-outline-light">Back to Home</a>
+                    <a href="/submit/general" class="btn btn-outline-light">Submit General Instead</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
